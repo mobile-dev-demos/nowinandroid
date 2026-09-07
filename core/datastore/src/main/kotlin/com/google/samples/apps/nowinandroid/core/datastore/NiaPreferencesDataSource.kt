@@ -124,7 +124,12 @@ class NiaPreferencesDataSource @Inject constructor(
         try {
             userPreferences.updateData {
                 it.copy {
-                    bookmarkedNewsResourceIds.put(newsResourceId, true)
+                    // Add the id when bookmarking, drop it when un-bookmarking.
+                    if (bookmarked) {
+                        bookmarkedNewsResourceIds.put(newsResourceId, true)
+                    } else {
+                        bookmarkedNewsResourceIds.remove(newsResourceId)
+                    }
                 }
             }
         } catch (ioException: IOException) {

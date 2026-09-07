@@ -23,6 +23,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -75,6 +76,19 @@ class NiaPreferencesDataSourceTest {
             // Then: onboarding should be shown again
             assertFalse(subject.userData.first().shouldHideOnboarding)
         }
+
+    @Test
+    fun setNewsResourceBookmarked_false_removesIdFromBookmarks() = testScope.runTest {
+        // Bookmark two resources, then un-bookmark one of them.
+        subject.setNewsResourceBookmarked("0", true)
+        subject.setNewsResourceBookmarked("1", true)
+        assertEquals(setOf("0", "1"), subject.userData.first().bookmarkedNewsResources)
+
+        subject.setNewsResourceBookmarked("0", false)
+
+        // Only the un-bookmarked id is removed; the other bookmark is preserved.
+        assertEquals(setOf("1"), subject.userData.first().bookmarkedNewsResources)
+    }
 
     @Test
     fun shouldUseDynamicColorFalseByDefault() = testScope.runTest {
