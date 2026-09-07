@@ -153,6 +153,16 @@ class OfflineFirstUserDataRepositoryTest {
                     .map { it.bookmarkedNewsResources }
                     .first(),
             )
+
+            // Un-bookmarking removes only that resource from the persisted set.
+            subject.setNewsResourceBookmarked(newsResourceId = "0", bookmarked = false)
+
+            assertEquals(
+                setOf("1"),
+                subject.userData
+                    .map { it.bookmarkedNewsResources }
+                    .first(),
+            )
         }
 
     @Test
